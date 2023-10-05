@@ -5,22 +5,41 @@ let formFieldLastName = document.getElementById('form-field-last-name');
 let formFieldTitle = document.getElementById('form-field-title');
 let formFieldAffiliation = document.getElementById('form-field-affiliation');
 let formFieldEmail = document.getElementById('form-field-email');
+let formTable = document.getElementById('form-table');
+const addRowButtonContainer = document.getElementById('btn-add-row-container');
 // Global variable for counting form sections. This ensures each new section has a unique identifier.
 let formCounter = 1;
 
 
-
 // Submit button handling
 submitButton.addEventListener('click', () => {
-    const data = {
-        firstName: formFieldFirstName.value,
-        lastName: formFieldLastName.value,
-        title: formFieldTitle.value,
-        affiliation: formFieldAffiliation.value,
-        email: formFieldEmail.value
+    // Create an empty object to store the form data
+    const data = {};
+    const allChildren = original.parentNode.children;
+    console.log(allChildren);
+    // iterate through all children of the form and build data object with First Name, Last Name, Title, Affiliation, and Email values provided within each input field
+    for (let i = 0; i < allChildren.length; i++) {
+        const child = allChildren[i];
+        // console.log(child);
+        // Iterate over each child
+        for (let j = 0; j < child.children.length; j++) {
+            const labelChild = child.children[j];
+            for (let k = 0; k < labelChild.children.length; k++) {
+                const inputChild = labelChild.children[k];
+                if (inputChild.tagName === 'INPUT') {
+                    data[inputChild.id] = inputChild.value;
+                }
+            }
+        }
     }
-    console.log(data);
+    // console.log(data);
+    updateTable(data);
 })
+
+function updateTable(data) {
+    for (let i = 0; i < Object.keys(data).length; i++) {}
+
+}
 
 // Add row handling
 addRowButton.addEventListener('click', () => {
@@ -28,10 +47,7 @@ addRowButton.addEventListener('click', () => {
 })
 
 
-let i = 0;
 const original = document.getElementById('form-fields');
-const addRowButtonContainer = document.getElementById('btn-add-row-container');
-
 function duplicate() {
     // Create a deep copy of the original form section
     const clone = original.cloneNode(true);
