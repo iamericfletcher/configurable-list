@@ -1,3 +1,4 @@
+let inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
 const addRowButton = document.getElementById('btn-add-row');
 const submitButton = document.getElementById('btn-submit');
 // let formTable = document.getElementById('form-table');
@@ -13,9 +14,48 @@ const data = {
     Count: 1,
 };
 
+// Utility function to check if all input fields are filled
+function checkInputsFilled() {
+    console.log('checkInputsFilled')
+    inputs = document.querySelectorAll('input[type="text"], input[type="email"]'); // Re-query to capture new input fields
+    let allFilled = true;
+
+    inputs.forEach(i => {
+        if (!i.value.trim()) {
+            console.log('empty')
+            allFilled = false;
+        }
+    });
+
+    if (allFilled) {
+        console.log('all filled')
+        submitButton.removeAttribute('disabled');
+        submitButton.classList.remove('cursor-not-allowed');
+        submitButton.classList.remove('opacity-50');
+
+        addRowButton.removeAttribute('disabled');
+        addRowButton.classList.remove('cursor-not-allowed');
+        addRowButton.classList.remove('opacity-50');
+    } else {
+        submitButton.setAttribute('disabled', 'true');
+        submitButton.classList.add('cursor-not-allowed');
+        submitButton.classList.add('opacity-50');
+
+        addRowButton.setAttribute('disabled', 'true');
+        addRowButton.classList.add('cursor-not-allowed');
+        addRowButton.classList.add('opacity-50');
+    }
+}
+
+// Attach event listeners to all input fields upon page load
+inputs.forEach(input => {
+    input.addEventListener('input', checkInputsFilled);
+});
+
 // on page load, focus the input field with id First-Name
 document.getElementById('First-Name').focus();
 
+// Attach event listener to the submit button
 submitButton.addEventListener('click', () => {
     const allChildren = original.parentNode.children;
     // iterate through all children of the form and build data object with First Name, Last Name, Title, Affiliation, and Email values provided within each input field
@@ -33,8 +73,11 @@ submitButton.addEventListener('click', () => {
         }
     }
     updateTable(data);
+    checkInputsFilled(); // Call the utility function after the submit button is clicked
+
 })
 
+// function to update the table with the data object
 function updateTable(data) {
     // console.log(data)
     // const allChildren = original.parentNode.children;
@@ -54,7 +97,7 @@ function updateTable(data) {
                 const newTableData = document.createElement('td');
                 const newTableDataContent = document.createTextNode(Object.values(data)[i].toString());
                 newTableData.appendChild(newTableDataContent);
-                newTableData.className = 'whitespace-nowrap px-6 py-4';
+                newTableData.className = 'whitespace-nowrap px-6 py-4 border';
                 newTableRow.appendChild(newTableData);
             }
         }
@@ -63,14 +106,14 @@ function updateTable(data) {
             const newTableHeader = document.createElement('th');
             const newTableHeaderContent = document.createTextNode(Object.keys(data)[i]);
             newTableHeader.appendChild(newTableHeaderContent);
-            newTableHeader.className = 'px-6 py-4';
+            newTableHeader.className = 'px-6 py-4 border';
             newTableHeader.setAttribute('scope', 'col');
             formTableHeader.appendChild(newTableHeader);
             // create new table data
             const newTableData = document.createElement('td');
             const newTableDataContent = document.createTextNode(Object.values(data)[i].toString());
             newTableData.appendChild(newTableDataContent);
-            newTableData.className = 'whitespace-nowrap px-6 py-4';
+            newTableData.className = 'whitespace-nowrap px-6 py-4 border';
             newTableRow.appendChild(newTableData);
         }
     }
@@ -79,6 +122,7 @@ function updateTable(data) {
     clearState(data);
 }
 
+// function to clear the state of the form
 function clearState(data) {
     const allChildren = original.parentNode.children;
     // remove all divs with ids starting with form-fields-
@@ -114,13 +158,15 @@ function clearState(data) {
     document.getElementById('First-Name').focus();
 }
 
+// Attach event listener to the add row button
 addRowButton.addEventListener('click', () => {
     duplicate();
+    checkInputsFilled();
 })
-
 
 const original = document.getElementById('form-fields');
 
+// function to duplicate the form section
 function duplicate() {
     // Create a deep copy of the original form section
     const clone = original.cloneNode(true);
@@ -148,11 +194,15 @@ function duplicate() {
     // Insert the cloned section just before the "Add Row" button container
     original.parentNode.insertBefore(clone, addRowButtonContainer);
 
+    // re-attach the event listeners to the new input fields
+    inputs = document.querySelectorAll('input[type="text"], input[type="email"]'); // Re-query to capture ALL input fields again
+    inputs.forEach(input => {
+        input.addEventListener('input', checkInputsFilled);
+    });
+
     // Focus the input field with id First-Name-i where i is the formFieldGroupCount
     document.getElementById('First-Name-' + formFieldGroupCount).focus();
 
     // Increment the counter for the next time we clone a section
     formFieldGroupCount++;
-
-
 }
