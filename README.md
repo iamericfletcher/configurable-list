@@ -8,7 +8,9 @@ the [configurable list widget](https://www.jotform.com/help/282-how-to-set-up-th
 > set
 > of questions multiple times.”
 
-A single use would look like:
+Example Jotform form with the Configurable List widget: https://form.jotform.com/232838377800058 
+
+A single use would look like the following in the table:
 
 | config_list |
 |-------------|
